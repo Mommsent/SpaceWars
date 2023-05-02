@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio;
+using SaveLoadSystem;
 
 public class AudioSettingsScript : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class AudioSettingsScript : MonoBehaviour
     [SerializeField]
     private AudioMixer mixer;
 
+    private AudioSource audioSource;
+
     [SerializeField]
     private string volumeName;
 
@@ -20,12 +23,10 @@ public class AudioSettingsScript : MonoBehaviour
 
     private void Start()
     {
-        //Set max value by standart at first start
-        slider.value = float.MaxValue;
-        mixer.SetFloat(volumeName, Mathf.Log(float.MaxValue) * 20f);
+        audioSource = GetComponent<AudioSource>();
 
+        UpdateValueOnChange(1f);
         LoadValues();
-        UpdateValueOnChange(slider.value);
 
         slider.onValueChanged.AddListener(delegate
         {
@@ -48,13 +49,13 @@ public class AudioSettingsScript : MonoBehaviour
     {
         float volumeValue = slider.value;
         PlayerPrefs.SetFloat(volumeName, volumeValue);
-        LoadValues();
     }
 
     public void LoadValues()
     {
         float volumeValue = PlayerPrefs.GetFloat(volumeName);
+        UpdateValueOnChange(volumeValue);
+        audioSource.volume = volumeValue;
         slider.value = volumeValue;
-        AudioListener.volume = PlayerPrefs.GetFloat(volumeName);
     }
 }
