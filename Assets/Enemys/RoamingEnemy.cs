@@ -2,32 +2,39 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RoamingEnemy : MonoBehaviour
+public class RoamingEnemy : MonoBehaviour, IDead
 {
-    private Vector2 position;
-    private Vector2 direction;
+    private Vector2 _position;
+    private Vector2 _direction;
 
-    [SerializeField] private AudioSource _audioSource;
-    [SerializeField] private AudioClip _DeathClip;
+    [SerializeField]
+    private AudioSource _audioSource;
+    [SerializeField]
+    private AudioClip _DeathClip;
 
-    Animator anim;
+    private Animator _anim;
 
-    GameManager gameManager;
+    private PolygonCollider2D _polygonCollider2D;
 
-    Rigidbody2D rb;
-    private float speed = -1f;
-    private float strafeSpeed = 6f;
+    private int _pointForDefeating = 2;
 
-    private int randomDirection;
+    public delegate void EnemyDied(int points);
+    public static event EnemyDied EnemyIsDied;
 
-    private float border = 5.9f;
+    private Rigidbody2D _rigidbody2D;
+    private float _speed = -1f;
+    private float _strafeSpeed = 6f;
+
+    private int _randomDirection;
+
+    private float _border = 5.9f;
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
-        gameManager = GameObject.FindObjectOfType<GameManager>();
-        anim = GetComponent<Animator>();
-        randomDirection = Random.Range(0, 2);
+        _polygonCollider2D = GetComponent<PolygonCollider2D>();
+        _rigidbody2D = GetComponent<Rigidbody2D>();
+        _anim = GetComponent<Animator>();
+        _randomDirection = Random.Range(0, 2);
         _audioSource = GetComponent<AudioSource>();
         ChooseDirection();
     }
@@ -39,45 +46,48 @@ public class RoamingEnemy : MonoBehaviour
 
     private void MoveTheEnemy()
     {
-        rb.velocity = direction;
+        _rigidbody2D.velocity = _direction;
     }
     private Vector2 ChooseDirection()
     {
-        if (randomDirection == 0)
+        if (_randomDirection == 0)
         {
-            rb.velocity = new Vector2(-strafeSpeed, speed);
-            direction = rb.velocity;
+            _rigidbody2D.velocity = new Vector2(-_strafeSpeed, _speed);
+            _direction = _rigidbody2D.velocity;
         }
-        if (randomDirection == 1)
+        if (_randomDirection == 1)
         {
-            rb.velocity = new Vector2(strafeSpeed, speed);
-            direction = rb.velocity;
+            _rigidbody2D.velocity = new Vector2(_strafeSpeed, _speed);
+            _direction = _rigidbody2D.velocity;
         }
-        return direction;
+        return _direction;
     }
 
     private void CheckIfBorder()
     {
-        position = this.transform.position;
-        if (position.x >= border)
+        _position = this.transform.position;
+        if (_position.x >= _border)
         {
-            rb.velocity = new Vector2(-strafeSpeed, speed);
-            direction = rb.velocity;
+            _rigidbody2D.velocity = new Vector2(-_strafeSpeed, _speed);
+            _direction = _rigidbody2D.velocity;
         }
-        else if (position.x <= -border)
+        else if (_position.x <= -_border)
         {
-            rb.velocity = new Vector2(strafeSpeed, speed);
-            direction = rb.velocity;
+            _rigidbody2D.velocity = new Vector2(_strafeSpeed, _speed);
+            _direction = _rigidbody2D.velocity;
         }
-
     }
-
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.tag == "Bullet")
         {
-            anim.SetBool("IsDead", true);
-            gameManager.AddScore();// add score for enemy
+            
+            //give points value for defeating an enemy to all subscribed methods 
+            if (EnemyIsDied != null)
+                EnemyIsDied(_pointForDefeating);
+
+            _anim.SetBool("IsDead", true);
+            DeactivateRenderAndCollision();
             _audioSource.PlayOneShot(_DeathClip);
             StartCoroutine(DelayBeforeDestroy());
             Destroy(collision.gameObject);
@@ -88,5 +98,16 @@ public class RoamingEnemy : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
         Destroy(gameObject);
+    }
+
+    public void DeactivateRenderAndCollision()
+    {
+        _polygonCollider2D.enabled = false;
+        for (int i = 0; i < this.transform.childCount; i++)
+        {
+            var child = this.transform.GetChild(i).gameObject;
+            if (child != null)
+                child.SetActive(false);
+        }
     }
 }

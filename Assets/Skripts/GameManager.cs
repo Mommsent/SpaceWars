@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Events;
+using SaveLoadSystem;
 
 public class GameManager : MonoBehaviour
 {
@@ -15,16 +16,12 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private TMP_Text gameOverScore;
 
-    private ShipControl movement;
-
     private int playerScore = 0;
 
     public delegate void GamePaused();
     public static event GamePaused Paused;
     public delegate void GameContinued();
     public static event GameContinued Continued;
-    public delegate void GameOver();
-    public static event GameOver GameIsOver;
 
     private bool IsGameOver;
     private static bool gameIsPaused;
@@ -32,8 +29,8 @@ public class GameManager : MonoBehaviour
     //Find player, that we can deactivate controls and play gameover clip
     private void Start()
     {
+        SaveGameManager.LoadGame();
         IsGameOver = false;
-        movement = GameObject.FindObjectOfType<ShipControl>();
         _audioSource = GetComponent<AudioSource>();
     }
 
@@ -44,6 +41,20 @@ public class GameManager : MonoBehaviour
         {
             PausePressed();
         }
+    }
+
+    private void OnEnable()
+    {
+        ShipControl.GameIsOver += PlayerDied;
+        EnemyMover.EnemyIsDied += AddScore;
+        RoamingEnemy.EnemyIsDied += AddScore;
+    }
+
+    private void OnDisable()
+    {
+        ShipControl.GameIsOver -= PlayerDied;
+        EnemyMover.EnemyIsDied -= AddScore;
+        RoamingEnemy.EnemyIsDied -= AddScore;
     }
 
     private void PausePressed()
@@ -72,25 +83,30 @@ public class GameManager : MonoBehaviour
         }
     }
     
-
-    public void AddScore()
+    private void AddScore(int value)
     {
-        playerScore++;
+        playerScore+= value;
         scoreText.text = "Score: " + playerScore.ToString(); // convert and print score on the screen
     }
 
     //That what will heppend when player lose
-    public void PlayerDied()
+    private void PlayerDied()
     {
+        IsItTheBestScore(playerScore);
+        SaveGameManager.SaveGame();
         IsGameOver = true;
-        gameOverScore.text = "Your final score is: " + playerScore.ToString();
+        gameOverScore.text = "Your final score is: " + playerScore.ToString() + "\n Your the best score is " + SaveData.score;
         scoreText.enabled = false;
-        movement.enabled = false;
-
-        if (GameIsOver != null)
-            GameIsOver();
-
         Cursor.visible = true;
         _audioSource.PlayOneShot(_GameOverClip);
-    }    
+    }
+
+    //Check if current score is the highest score you ever have
+    private void IsItTheBestScore(int currentScore)
+    {
+        if(currentScore > SaveData.score)
+        {
+            SaveData.score = currentScore;
+        }
+    }
 }

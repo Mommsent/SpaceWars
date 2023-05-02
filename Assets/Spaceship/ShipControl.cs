@@ -10,21 +10,28 @@ public class ShipControl : MonoBehaviour
     [SerializeField] private AudioClip _ShotClip;
     [SerializeField] private AudioClip _DeathClip;
 
+    public delegate void GameOver();
+    public static event GameOver GameIsOver;
 
     private Vector2 spawnPos;
 
-
     public GameManager gameManager;
 
-    public GameObject bulletPrefab;
-    public GameObject shildPrefab;
-    public GameObject gunUpPrefab;
+    [SerializeField]
+    private GameObject bulletPrefab;
+    [SerializeField]
+    private GameObject shildPrefab;
+    [SerializeField]
+    private GameObject gunUpPrefab;
 
+    [SerializeField]
     public float speed = 10f;
+    [SerializeField]
     public float xLimit;
     private float reloadTime = 0.5f;
 
     private bool isShilded = false;
+    private bool IsDead = false;
 
     public float ReloadTime
     {
@@ -32,7 +39,7 @@ public class ShipControl : MonoBehaviour
         set { reloadTime = value;}
     }
 
-    float elapsedTime = 0f;
+    private float elapsedTime = 0f;
 
     private void Start()
     {
@@ -41,10 +48,13 @@ public class ShipControl : MonoBehaviour
         Cursor.visible = false;
     }
 
-    void Update()
+    private void Update()
     {
-        Move();
-        Shoot();
+        if (IsDead == false)
+        {
+            Move();
+            Shoot();
+        }
     }
 
     private void Move()
@@ -67,7 +77,6 @@ public class ShipControl : MonoBehaviour
             spawnPos += new Vector2(0, 1.2f);
             Instantiate(bulletPrefab, spawnPos, Quaternion.identity);
             _audioSource.PlayOneShot(_ShotClip);
-
             elapsedTime = 0f; //reset bullet firing timer
         }
     }
@@ -92,7 +101,11 @@ public class ShipControl : MonoBehaviour
         else if(other.CompareTag("Enemy") && isShilded == false)
         {
             ship_animator.SetBool("IsDead", true);
-            gameManager.PlayerDied();
+            IsDead = true;
+
+            if (GameIsOver != null)
+                GameIsOver();
+
             Destroy(other.gameObject);
             _audioSource.PlayOneShot(_DeathClip);
             StartCoroutine(DelayBeforeDestroy());

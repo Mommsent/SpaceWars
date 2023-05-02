@@ -15,7 +15,7 @@ public class EnemySpawner : MonoBehaviour
     {
         StartCoroutine(DelayBeforeSpawning());
     }
-
+    //Spawn the enemy
     public void Spawn()
     {
         //Create the enemy in random position on X axis

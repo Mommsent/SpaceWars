@@ -31,8 +31,8 @@ public class AudioSettingsScript : MonoBehaviour
         {
             UpdateValueOnChange(slider.value);
         });
-
     }
+
     public void UpdateValueOnChange(float value)
     {
         if(mixer != null)
@@ -50,9 +50,11 @@ public class AudioSettingsScript : MonoBehaviour
         PlayerPrefs.SetFloat(volumeName, volumeValue);
         LoadValues();
     }
+
     public void LoadValues()
     {
         float volumeValue = PlayerPrefs.GetFloat(volumeName);
         slider.value = volumeValue;
+        AudioListener.volume = PlayerPrefs.GetFloat(volumeName);
     }
 }
