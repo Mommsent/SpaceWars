@@ -18,14 +18,18 @@ public class GameManager : MonoBehaviour
 
     private int playerScore = 0;
 
-    public delegate void GamePaused();
-    public static event GamePaused Paused;
-    public delegate void GameContinued();
-    public static event GameContinued Continued;
+    public static UnityEvent GamePaused = new UnityEvent();
+    public static UnityEvent Continued = new UnityEvent();
 
     private bool IsGameOver;
-    private static bool gameIsPaused;
+    private bool gameIsPaused;
 
+    private void Awake()
+    {
+        ShipControl.GameOver.AddListener(PlayerDied);
+        EnemyMover.EnemyIsDied.AddListener(AddScore);
+        RoamingEnemy.EnemyIsDied.AddListener(AddScore);
+    }
     //Find player, that we can deactivate controls and play gameover clip
     private void Start()
     {
@@ -43,20 +47,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void OnEnable()
-    {
-        ShipControl.GameIsOver += PlayerDied;
-        EnemyMover.EnemyIsDied += AddScore;
-        RoamingEnemy.EnemyIsDied += AddScore;
-    }
-
-    private void OnDisable()
-    {
-        ShipControl.GameIsOver -= PlayerDied;
-        EnemyMover.EnemyIsDied -= AddScore;
-        RoamingEnemy.EnemyIsDied -= AddScore;
-    }
-
     private void PausePressed()
     {
         gameIsPaused = !gameIsPaused;
@@ -67,16 +57,14 @@ public class GameManager : MonoBehaviour
     {
         if (gameIsPaused)
         {
-            if (Paused != null)
-                Paused();
+            GamePaused.Invoke();
 
             Time.timeScale = 0f;
             Cursor.visible = true;
         }
         else
         {
-            if (Continued != null)
-                Continued();
+            Continued.Invoke();
 
             Time.timeScale = 1;
             Cursor.visible = false;
@@ -93,7 +81,6 @@ public class GameManager : MonoBehaviour
     private void PlayerDied()
     {
         IsItTheBestScore(playerScore);
-        SaveGameManager.SaveGame();
         IsGameOver = true;
         gameOverScore.text = "Your final score is: " + playerScore.ToString() + "\n Your the best score is " + SaveData.score;
         scoreText.enabled = false;
@@ -104,9 +91,14 @@ public class GameManager : MonoBehaviour
     //Check if current score is the highest score you ever have
     private void IsItTheBestScore(int currentScore)
     {
-        if(currentScore > SaveData.score)
+        SaveGameManager.LoadGame();
+        if (currentScore > SaveData.score)
         {
             SaveData.score = currentScore;
+            SaveGameManager.SaveGame();
         }
     }
 }
+
+[System.Serializable]
+public class EnemyIsDied : UnityEvent<int> { }

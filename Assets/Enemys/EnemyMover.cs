@@ -1,36 +1,36 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class EnemyMover : MonoBehaviour, IDead
 {
-    private float speed = -4f;
-    private Rigidbody2D rigidBody;
+    private float _speed = -4f;
+    private Rigidbody2D _rigidBody;
 
-    private int pointForDefeating = 1;
+    private int _pointForDefeating = 1;
 
     private PolygonCollider2D _polygonCollider2D;
 
     [SerializeField] private AudioSource _audioSource;
     [SerializeField] private AudioClip _DeathClip;
 
-    public delegate void EnemyDied(int points);
-    public static event EnemyDied EnemyIsDied;
+    public static UnityEvent<int> EnemyIsDied = new UnityEvent<int>();
 
-    private Animator anim;
+    private Animator _anim;
 
     // Start is called before the first frame update
     void Awake()
     {
         _polygonCollider2D = GetComponent<PolygonCollider2D>();
 
-        rigidBody = GetComponent<Rigidbody2D>();
+        _rigidBody = GetComponent<Rigidbody2D>();
 
-        anim = GetComponent<Animator>();
+        _anim = GetComponent<Animator>();
 
         _audioSource = GetComponent<AudioSource>();
 
-        rigidBody.velocity = new Vector2(0, speed); //push the enemy downside
+        _rigidBody.velocity = new Vector2(0, _speed); //push the enemy downside
     }
 
     //Check if destroed by player`s bullet
@@ -39,11 +39,10 @@ public class EnemyMover : MonoBehaviour, IDead
         if (collision.gameObject.tag == "Bullet")
         {
             DeactivateRenderAndCollision();
-            anim.SetBool("IsDead", true);
+            _anim.SetBool("IsDead", true);
 
             //give points value for defeating an enemy to all subscribed methods
-            if (EnemyIsDied != null)
-                EnemyIsDied(pointForDefeating);
+            EnemyIsDied.Invoke(_pointForDefeating);
 
             _audioSource.PlayOneShot(_DeathClip);
             StartCoroutine(DelayBeforeDestroy());

@@ -1,56 +1,54 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class ShipControl : MonoBehaviour
 {
-    private Animator ship_animator;
+    private Animator _ship_animator;
 
     [SerializeField] private AudioSource _audioSource;
     [SerializeField] private AudioClip _ShotClip;
     [SerializeField] private AudioClip _DeathClip;
 
-    public delegate void GameOver();
-    public static event GameOver GameIsOver;
+    public static UnityEvent GameOver = new UnityEvent();
 
-    private Vector2 spawnPos;
-
-    public GameManager gameManager;
+    private Vector2 _spawnPos;
 
     [SerializeField]
-    private GameObject bulletPrefab;
+    private GameObject _bulletPrefab;
     [SerializeField]
-    private GameObject shildPrefab;
+    private GameObject _shildPrefab;
     [SerializeField]
-    private GameObject gunUpPrefab;
+    private GameObject _gunUpPrefab;
 
     [SerializeField]
-    public float speed = 10f;
+    public float _speed = 10f;
     [SerializeField]
-    public float xLimit;
-    private float reloadTime = 0.5f;
+    public float _xLimit;
+    private float _reloadTime = 0.5f;
 
-    private bool isShilded = false;
-    private bool IsDead = false;
+    private bool _isShilded = false;
+    private bool _IsDead = false;
 
-    public float ReloadTime
+    private float ReloadTime
     {
-        get { return reloadTime = 0.25f;}
-        set { reloadTime = value;}
+        get { return _reloadTime = 0.25f;}
+        set { _reloadTime = value;}
     }
 
     private float elapsedTime = 0f;
 
     private void Start()
     {
-        ship_animator = GetComponent<Animator>();
+        _ship_animator = GetComponent<Animator>();
         _audioSource = GetComponent<AudioSource>();
         Cursor.visible = false;
     }
 
     private void Update()
     {
-        if (IsDead == false)
+        if (_IsDead == false)
         {
             Move();
             Shoot();
@@ -60,10 +58,10 @@ public class ShipControl : MonoBehaviour
     private void Move()
     {
         float xInput = Input.GetAxis("Horizontal");
-        transform.Translate(xInput * speed * Time.deltaTime, 0f, 0f);
+        transform.Translate(xInput * _speed * Time.deltaTime, 0f, 0f);
 
         Vector2 position = transform.position;
-        position.x = Mathf.Clamp(position.x, -xLimit, xLimit);
+        position.x = Mathf.Clamp(position.x, -_xLimit, _xLimit);
         transform.position = position;
     }
 
@@ -71,40 +69,38 @@ public class ShipControl : MonoBehaviour
     {
         elapsedTime += Time.deltaTime;
 
-        if (Input.GetButton("Jump") && elapsedTime > reloadTime)
+        if (Input.GetButton("Jump") && elapsedTime > _reloadTime)
         {
-            spawnPos = transform.position;
-            spawnPos += new Vector2(0, 1.2f);
-            Instantiate(bulletPrefab, spawnPos, Quaternion.identity);
+            _spawnPos = transform.position;
+            _spawnPos += new Vector2(0, 1.2f);
+            Instantiate(_bulletPrefab, _spawnPos, Quaternion.identity);
             _audioSource.PlayOneShot(_ShotClip);
             elapsedTime = 0f; //reset bullet firing timer
         }
     }
 
-    
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("ShootFasterPowerUP"))
         {
-            reloadTime /= 2;
+            _reloadTime /= 2;
             Destroy(other.gameObject);
-            gunUpPrefab.SetActive(true);
+            _gunUpPrefab.SetActive(true);
             StartCoroutine(Cooldown());
         }
         else if(other.CompareTag("ShieldPowerUp"))
         {
-            isShilded = true;
+            _isShilded = true;
             Destroy(other.gameObject);
-            shildPrefab.SetActive(true);
+            _shildPrefab.SetActive(true);
             StartCoroutine(ShildedTime());
         }
-        else if(other.CompareTag("Enemy") && isShilded == false)
+        else if(other.CompareTag("Enemy") && _isShilded == false)
         {
-            ship_animator.SetBool("IsDead", true);
-            IsDead = true;
+            _ship_animator.SetBool("IsDead", true);
+            _IsDead = true;
 
-            if (GameIsOver != null)
-                GameIsOver();
+            GameOver.Invoke();
 
             Destroy(other.gameObject);
             _audioSource.PlayOneShot(_DeathClip);
@@ -115,14 +111,14 @@ public class ShipControl : MonoBehaviour
     IEnumerator Cooldown()
     {
         yield return new WaitForSeconds(6f);
-        gunUpPrefab.SetActive(false);
-        reloadTime = 0.5f;
+        _gunUpPrefab.SetActive(false);
+        _reloadTime = 0.5f;
     }
     IEnumerator ShildedTime()
     {
         yield return new WaitForSeconds(4f);
-        shildPrefab.SetActive(false);
-        isShilded = false;
+        _shildPrefab.SetActive(false);
+        _isShilded = false;
     }
 
     IEnumerator DelayBeforeDestroy()

@@ -9,29 +9,16 @@ public class MenuHandler : MonoBehaviour
     private GameObject gameOverMenu;
     [SerializeField]
     private GameObject mainMenu;
+    [SerializeField] 
+    private GameObject[] pauseMenuse;
 
-    [SerializeField]
-    private static GameObject settings;
-    [SerializeField]
-    private static GameObject audioSettings;
-    [SerializeField]
-    private static GameObject graphicSettings;
-    [SerializeField]
-    private List<GameObject> pauseMenuse = new List<GameObject>() { settings, audioSettings, graphicSettings };
-
-    private void OnEnable()
+    private void Awake()
     {
-        GameManager.Paused += Pause;
-        GameManager.Continued += Continue;
-        ShipControl.GameIsOver += GameIsOver;
+        GameManager.GamePaused.AddListener(Pause);
+        GameManager.Continued.AddListener(Continue);
+        ShipControl.GameOver.AddListener(GameIsOver);
     }
 
-    private void OnDisable()
-    {
-        GameManager.Paused -= Pause;
-        GameManager.Continued -= Continue;
-        ShipControl.GameIsOver -= GameIsOver;
-    }
     //Autocloser menu panels
     private void DeactivateMenuPannels()
     {
@@ -40,7 +27,7 @@ public class MenuHandler : MonoBehaviour
             menu.SetActive(false);
         }
     }
-
+    //Game conditions
     private void Pause()
     {
         mainMenu.SetActive(true);

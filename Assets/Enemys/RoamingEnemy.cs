@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class RoamingEnemy : MonoBehaviour, IDead
 {
@@ -18,8 +19,7 @@ public class RoamingEnemy : MonoBehaviour, IDead
 
     private int _pointForDefeating = 2;
 
-    public delegate void EnemyDied(int points);
-    public static event EnemyDied EnemyIsDied;
+    public static UnityEvent<int> EnemyIsDied = new UnityEvent<int>();
 
     private Rigidbody2D _rigidbody2D;
     private float _speed = -1f;
@@ -81,10 +81,9 @@ public class RoamingEnemy : MonoBehaviour, IDead
     {
         if (collision.gameObject.tag == "Bullet")
         {
-            
+
             //give points value for defeating an enemy to all subscribed methods 
-            if (EnemyIsDied != null)
-                EnemyIsDied(_pointForDefeating);
+            EnemyIsDied.Invoke(_pointForDefeating);
 
             _anim.SetBool("IsDead", true);
             DeactivateRenderAndCollision();
