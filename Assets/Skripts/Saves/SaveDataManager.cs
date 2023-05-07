@@ -10,7 +10,7 @@ namespace SaveLoadSystem
         public const string SaveDirectory = "/SaveData/";
         public const string FileName = "SaveGame.txt";
 
-        public static bool SaveGame()
+        public static void SaveGame()
         {
             var directory = Application.persistentDataPath + SaveDirectory;
 
@@ -20,27 +20,25 @@ namespace SaveLoadSystem
             string json = JsonUtility.ToJson(CurrentSaveData, true);
             File.WriteAllText(directory + FileName, json);
 
-            GUIUtility.systemCopyBuffer = directory;
+            //GUIUtility.systemCopyBuffer = directory;
 
-            return true;
         }
 
         public static void LoadGame()
         {
             string fullPath = Application.persistentDataPath + SaveDirectory + FileName;
-            SaveData tempData = new SaveData();
+            //SaveData tempData = new SaveData();
 
-            if(File.Exists(fullPath))
+            if (File.Exists(fullPath))
             {
                 string json = File.ReadAllText(fullPath);
-                tempData = JsonUtility.FromJson<SaveData>(json);
+                SaveData data = JsonUtility.FromJson<SaveData>(json);
+                CurrentSaveData = data;
             }
             else
             {
-                Debug.LogError("Save file does not exist!");
+                SaveGame();
             }
-
-            CurrentSaveData = tempData;
         }
     }
 }

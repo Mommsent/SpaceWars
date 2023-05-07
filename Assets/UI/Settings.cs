@@ -8,18 +8,17 @@ using UnityEngine.Events;
 
 public class Settings : MonoBehaviour
 {
+    private void Start()
+    {
+        SetDefaultSettings();
+    }
+
+
     [SerializeField]
     private TMP_Dropdown dropdown;
     List<int> widths = new List<int>() { 586, 960, 1280, 1920, 3840 };
     List<int> heights = new List<int>() { 320, 540, 800, 1080, 2160 };
 
-    private bool isFullScreen = true;
-
-    private void Start()
-    {
-        SetDefaultSettings();
-    }
-    
     private void SetDefaultSettings()
     {
         dropdown.value = 3;
@@ -32,6 +31,9 @@ public class Settings : MonoBehaviour
         int height = heights[resolutionIndex];
         Screen.SetResolution(width, height, fullscreen);
     }
+
+
+    private bool isFullScreen = true;
 
     public void FullScreenToggle()
     {

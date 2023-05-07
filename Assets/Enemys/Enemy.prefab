@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4467931037188094}
   - component: {fileID: 212952195174925470}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: ship1-lines
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -94,12 +94,12 @@ GameObject:
   m_Component:
   - component: {fileID: 4193583667243190}
   - component: {fileID: 212833696140276620}
+  - component: {fileID: 1507345364359352999}
   - component: {fileID: -8969680133564323069}
   - component: {fileID: 3677419260022360562}
-  - component: {fileID: 1507345364359352999}
   - component: {fileID: 1118721582}
   - component: {fileID: 8198685489122869745}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -115,7 +115,7 @@ Transform:
   m_GameObject: {fileID: 1512782934554904}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.5, y: 2.5, z: 2.5}
+  m_LocalScale: {x: 2.5, y: 2.5242498, z: 2.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4280885400470788}
@@ -175,41 +175,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!50 &-8969680133564323069
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1512782934554904}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 0.5
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 4
---- !u!114 &3677419260022360562
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1512782934554904}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a3c54b5f012bf0b449c9ffcb7ab453b5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _audioSource: {fileID: 8198685489122869745}
-  _DeathClip: {fileID: 8300000, guid: d1698dd553af8ef4d887bc83b9687173, type: 3}
 --- !u!60 &1507345364359352999
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -248,6 +213,43 @@ PolygonCollider2D:
       - {x: 0.055, y: -0.19999999}
       - {x: 0.085, y: -0.11}
       - {x: 0.195, y: -0.14999999}
+--- !u!50 &-8969680133564323069
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1512782934554904}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0.5
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4
+--- !u!114 &3677419260022360562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1512782934554904}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3c54b5f012bf0b449c9ffcb7ab453b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _bulletPrefab: {fileID: 1877740161113332, guid: 165e69c8a6a3add498f3fbdb4e0472b0, type: 3}
+  _audioSource: {fileID: 8198685489122869745}
+  _DeathClip: {fileID: 8300000, guid: d1698dd553af8ef4d887bc83b9687173, type: 3}
+  _ShotClip: {fileID: 8300000, guid: f1364d48e48ea4fdab44868cc9b2a10e, type: 3}
 --- !u!95 &1118721582
 Animator:
   serializedVersion: 5
@@ -375,9 +377,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4280885400470788}
   - component: {fileID: 212592764215928704}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: ship1-flame
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

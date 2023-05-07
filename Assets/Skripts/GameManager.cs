@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private AudioClip _GameOverClip;
 
     [SerializeField]
-    public Text scoreText;
+    private Text scoreText;
     [SerializeField]
     private TMP_Text gameOverScore;
 
@@ -24,16 +24,16 @@ public class GameManager : MonoBehaviour
     private bool IsGameOver;
     private bool gameIsPaused;
 
+
     private void Awake()
     {
         ShipControl.GameOver.AddListener(PlayerDied);
-        EnemyMover.EnemyIsDied.AddListener(AddScore);
-        RoamingEnemy.EnemyIsDied.AddListener(AddScore);
+        Enemy.EnemyIsDied.AddListener(AddScore);
     }
+
     //Find player, that we can deactivate controls and play gameover clip
     private void Start()
     {
-        SaveGameManager.LoadGame();
         IsGameOver = false;
         _audioSource = GetComponent<AudioSource>();
     }

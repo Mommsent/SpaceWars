@@ -5,39 +5,10 @@ using UnityEngine.Events;
 
 public class ShipControl : MonoBehaviour
 {
-    private Animator _ship_animator;
-
-    [SerializeField] private AudioSource _audioSource;
-    [SerializeField] private AudioClip _ShotClip;
-    [SerializeField] private AudioClip _DeathClip;
-
     public static UnityEvent GameOver = new UnityEvent();
 
-    private Vector2 _spawnPos;
-
-    [SerializeField]
-    private GameObject _bulletPrefab;
-    [SerializeField]
-    private GameObject _shildPrefab;
-    [SerializeField]
-    private GameObject _gunUpPrefab;
-
-    [SerializeField]
-    public float _speed = 10f;
-    [SerializeField]
-    public float _xLimit;
-    private float _reloadTime = 0.5f;
-
-    private bool _isShilded = false;
-    private bool _IsDead = false;
-
-    private float ReloadTime
-    {
-        get { return _reloadTime = 0.25f;}
-        set { _reloadTime = value;}
-    }
-
-    private float elapsedTime = 0f;
+    private Animator _ship_animator;
+    [SerializeField] private AudioSource _audioSource;
 
     private void Start()
     {
@@ -55,15 +26,33 @@ public class ShipControl : MonoBehaviour
         }
     }
 
+
+    private float _speed = 7f;
+    private float _xLimit = 7.3f;
+    private float _uppYLimit = -1.26f;
+    private float _downYLimmit = 5f;
     private void Move()
     {
         float xInput = Input.GetAxis("Horizontal");
+        float yInput = Input.GetAxis("Vertical");
         transform.Translate(xInput * _speed * Time.deltaTime, 0f, 0f);
+        transform.Translate(0f, yInput * _speed * Time.deltaTime, 0f);
 
-        Vector2 position = transform.position;
-        position.x = Mathf.Clamp(position.x, -_xLimit, _xLimit);
-        transform.position = position;
+        Vector2 xPosition = transform.position;
+        xPosition.x = Mathf.Clamp(xPosition.x, -_xLimit, _xLimit);
+        transform.position = xPosition;
+        Vector2 Yposition = transform.position;
+        Yposition.y = Mathf.Clamp(Yposition.y, _uppYLimit, _downYLimmit);
+        transform.position = Yposition;
     }
+
+
+    private Vector2 _spawnPos;
+    private float elapsedTime = 0f;
+    private float _reloadTime = 0.5f;
+    [SerializeField]
+    private GameObject _bulletPrefab;
+    [SerializeField] private AudioClip _ShotClip;
 
     private void Shoot()
     {
@@ -79,6 +68,14 @@ public class ShipControl : MonoBehaviour
         }
     }
 
+
+    [SerializeField]
+    private GameObject _shildPrefab;
+    [SerializeField]
+    private GameObject _gunUpPrefab;
+    private bool _isShilded = false;
+    private bool _IsDead = false;
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("ShootFasterPowerUP"))
@@ -86,29 +83,47 @@ public class ShipControl : MonoBehaviour
             _reloadTime /= 2;
             Destroy(other.gameObject);
             _gunUpPrefab.SetActive(true);
-            StartCoroutine(Cooldown());
+            StartCoroutine(BuffDuration());
         }
-        else if(other.CompareTag("ShieldPowerUp"))
+        else if (other.CompareTag("ShieldPowerUp"))
         {
             _isShilded = true;
             Destroy(other.gameObject);
             _shildPrefab.SetActive(true);
             StartCoroutine(ShildedTime());
         }
-        else if(other.CompareTag("Enemy") && _isShilded == false)
+        else if (other.CompareTag("Enemy") && _isShilded == false && _IsDead == false)
         {
-            _ship_animator.SetBool("IsDead", true);
             _IsDead = true;
+            Destroy(other.gameObject);
+            PlayAnimOfDeath();
 
             GameOver.Invoke();
 
+            StartCoroutine(DelayBeforeDestroy());
+        }
+        else if (other.CompareTag("EnemyBullet") && _IsDead == false && _isShilded == false)
+        {
+            _IsDead = true;
             Destroy(other.gameObject);
-            _audioSource.PlayOneShot(_DeathClip);
+            PlayAnimOfDeath();
+
+            GameOver.Invoke();
+
             StartCoroutine(DelayBeforeDestroy());
         }
     }
 
-    IEnumerator Cooldown()
+
+    [SerializeField] private AudioClip _DeathClip;
+
+    private void PlayAnimOfDeath()
+    {
+        _ship_animator.SetBool("IsDead", true);
+        _audioSource.PlayOneShot(_DeathClip);
+    }
+
+    IEnumerator BuffDuration()
     {
         yield return new WaitForSeconds(6f);
         _gunUpPrefab.SetActive(false);

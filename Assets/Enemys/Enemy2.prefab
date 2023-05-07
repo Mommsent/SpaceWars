@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 4055151358943464}
   - component: {fileID: 212975623519947666}
   - component: {fileID: 669604618}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: ship2-lines
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -116,9 +116,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4629620492563178}
   - component: {fileID: 212816092555092974}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: ship2-flame
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -201,11 +201,11 @@ GameObject:
   - component: {fileID: 4803365131872970}
   - component: {fileID: 212975254239921132}
   - component: {fileID: 5097896351121047186}
+  - component: {fileID: 474338364685914086}
   - component: {fileID: 9010329676885926183}
-  - component: {fileID: -6215438523042678510}
   - component: {fileID: 4587867379277525415}
   - component: {fileID: -6005873189530811351}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: Enemy2
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -321,6 +321,27 @@ PolygonCollider2D:
       - {x: 0.175, y: -0.16}
       - {x: 0.36499998, y: -0.24}
       - {x: 0.36499998, y: 0.13}
+--- !u!50 &474338364685914086
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1988959072326566}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!114 &9010329676885926183
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -333,29 +354,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c797cbee68dc65b4db23c03786cac8a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _bulletPrefab: {fileID: 1877740161113332, guid: 165e69c8a6a3add498f3fbdb4e0472b0, type: 3}
   _audioSource: {fileID: -6005873189530811351}
   _DeathClip: {fileID: 8300000, guid: d1698dd553af8ef4d887bc83b9687173, type: 3}
---- !u!50 &-6215438523042678510
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1988959072326566}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 4
+  _ShotClip: {fileID: 8300000, guid: f1364d48e48ea4fdab44868cc9b2a10e, type: 3}
 --- !u!95 &4587867379277525415
 Animator:
   serializedVersion: 5

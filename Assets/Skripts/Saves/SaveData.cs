@@ -8,4 +8,3 @@ namespace SaveLoadSystem
         [SerializeField] public static int score;
     }
 }
-
