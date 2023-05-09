@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
     private TMP_Text gameOverScore;
 
     private int playerScore = 0;
+    private int pointsToDecrease = 2;
 
     public static UnityEvent GamePaused = new UnityEvent();
     public static UnityEvent Continued = new UnityEvent();
@@ -29,6 +30,7 @@ public class GameManager : MonoBehaviour
     {
         ShipControl.GameOver.AddListener(PlayerDied);
         Enemy.EnemyIsDied.AddListener(AddScore);
+        DestroyOnTrigger.EnemyPassed.AddListener(DecreaseScore);
     }
 
     //Find player, that we can deactivate controls and play gameover clip
@@ -76,6 +78,12 @@ public class GameManager : MonoBehaviour
         playerScore+= value;
         scoreText.text = "Score: " + playerScore.ToString(); // convert and print score on the screen
     }
+    private void DecreaseScore()
+    {
+        playerScore -= pointsToDecrease;
+        scoreText.text = "Score: " + playerScore.ToString();
+    }
+
 
     //That what will heppend when player lose
     private void PlayerDied()

@@ -57,7 +57,7 @@ public abstract class Enemy : MonoBehaviour, IDead
     }
     IEnumerator DelayBeforeDestroy()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.7f);
         Destroy(gameObject);
     }
 }

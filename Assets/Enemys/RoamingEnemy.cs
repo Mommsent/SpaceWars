@@ -13,7 +13,8 @@ public class RoamingEnemy : Enemy
     private float _speed = -1f;
     private float _strafeSpeed = 6f;
     private int _randomDirection;
-    private float _border = 5.9f;
+    private float _border = 12f;
+    private bool _isDead = false;
 
     private PolygonCollider2D _polygonCollider2D;
 
@@ -37,9 +38,12 @@ public class RoamingEnemy : Enemy
 
     private void LateUpdate()
     {
-        MoveTheEnemy(_rigidbody2D, _direction);
-        Shoot(_audioSource, _ShotClip);
-        CheckIfBorder();
+        if(_isDead == false)
+        {
+            MoveTheEnemy(_rigidbody2D, _direction);
+            Shoot(_audioSource, _ShotClip);
+            CheckIfBorder();
+        }
     }
 
     private Vector2 ChooseDirection()
@@ -78,6 +82,7 @@ public class RoamingEnemy : Enemy
     {
         if (collision.gameObject.tag == "PlayerBullet")
         {
+            _isDead = true;
             DeactivateRenderAndCollision(_polygonCollider2D);
 
             //give points value for defeating an enemy to all subscribed methods

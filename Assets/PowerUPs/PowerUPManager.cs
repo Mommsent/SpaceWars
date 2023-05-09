@@ -7,7 +7,7 @@ public class PowerUPManager : MonoBehaviour
     public GameObject[] powerUpPrefab;
     public float minSpawnDelay = 5f;
     public float maxSpawnDelay = 10f;
-    public float spawnXLimit = 5.3f;
+    public float spawnXLimit = 12f;
 
     // Start is called before the first frame update
     void Start()

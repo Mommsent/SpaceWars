@@ -27,10 +27,10 @@ public class ShipControl : MonoBehaviour
     }
 
 
-    private float _speed = 7f;
-    private float _xLimit = 7.3f;
-    private float _uppYLimit = -1.26f;
-    private float _downYLimmit = 5f;
+    private float _speed = 10f;
+    private float _xLimit = 13f;
+    private float _uppYLimit = 7f;
+    private float _downYLimmit = -4.3f;
     private void Move()
     {
         float xInput = Input.GetAxis("Horizontal");
@@ -42,7 +42,7 @@ public class ShipControl : MonoBehaviour
         xPosition.x = Mathf.Clamp(xPosition.x, -_xLimit, _xLimit);
         transform.position = xPosition;
         Vector2 Yposition = transform.position;
-        Yposition.y = Mathf.Clamp(Yposition.y, _uppYLimit, _downYLimmit);
+        Yposition.y = Mathf.Clamp(Yposition.y, _downYLimmit, _uppYLimit);
         transform.position = Yposition;
     }
 
@@ -75,12 +75,18 @@ public class ShipControl : MonoBehaviour
     private GameObject _gunUpPrefab;
     private bool _isShilded = false;
     private bool _IsDead = false;
+    private bool _isShootFasterActive = false;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("ShootFasterPowerUP"))
         {
-            _reloadTime /= 2;
+            _isShootFasterActive = true;
+            _reloadTime /= 2f;
+
+            if(_isShootFasterActive == true) 
+                durationTime += 6f;
+
             Destroy(other.gameObject);
             _gunUpPrefab.SetActive(true);
             StartCoroutine(BuffDuration());
@@ -88,6 +94,10 @@ public class ShipControl : MonoBehaviour
         else if (other.CompareTag("ShieldPowerUp"))
         {
             _isShilded = true;
+
+            if(_isShilded == true)
+                shildedTime += 4f;
+
             Destroy(other.gameObject);
             _shildPrefab.SetActive(true);
             StartCoroutine(ShildedTime());
@@ -123,17 +133,23 @@ public class ShipControl : MonoBehaviour
         _audioSource.PlayOneShot(_DeathClip);
     }
 
+    private float durationTime = 6f;
     IEnumerator BuffDuration()
     {
-        yield return new WaitForSeconds(6f);
+        yield return new WaitForSeconds(durationTime);
         _gunUpPrefab.SetActive(false);
+        _isShootFasterActive = false;
         _reloadTime = 0.5f;
+        durationTime = 6f;
     }
+
+    private float shildedTime = 4f;
     IEnumerator ShildedTime()
     {
-        yield return new WaitForSeconds(4f);
+        yield return new WaitForSeconds(shildedTime);
         _shildPrefab.SetActive(false);
         _isShilded = false;
+        shildedTime = 4f;
     }
 
     IEnumerator DelayBeforeDestroy()
