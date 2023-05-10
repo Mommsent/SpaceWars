@@ -49,7 +49,7 @@ public class Settings : MonoBehaviour
 
     public void Resolution(int resolutionIndex)
     {
-        bool fullscreen = FullScreenToggle();
+        bool fullscreen = Screen.fullScreen;
         int horizontal = resolutions[resolutionIndex].horizontal;
         int vertical = resolutions[resolutionIndex].vertical;
         Screen.SetResolution(horizontal, vertical, fullscreen);
@@ -57,13 +57,13 @@ public class Settings : MonoBehaviour
 
     private bool isFullScreen = true;
     [SerializeField]
-    private Toggle fullScreen; 
+    private Toggle fullScreen;
 
-    public bool FullScreenToggle()
+    public void FullScreenToggle()
     {
         isFullScreen = !isFullScreen;
         Screen.fullScreen = isFullScreen;
-        return isFullScreen;
+        Debug.Log("Fullscreen" + isFullScreen);
     }
 
     [SerializeField]

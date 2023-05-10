@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Events;
-using SaveLoadSystem;
 
 public class GameManager : MonoBehaviour
 {
@@ -90,7 +89,7 @@ public class GameManager : MonoBehaviour
     {
         IsItTheBestScore(playerScore);
         IsGameOver = true;
-        gameOverScore.text = "Your final score is: " + playerScore.ToString() + "\n Your the best score is " + SaveData.score;
+        gameOverScore.text = "Your final score is: " + playerScore.ToString() + "\n Your the best score is " + PlayerPrefs.GetInt("HighScore", 0);
         scoreText.enabled = false;
         Cursor.visible = true;
         _audioSource.PlayOneShot(_GameOverClip);
@@ -99,11 +98,10 @@ public class GameManager : MonoBehaviour
     //Check if current score is the highest score you ever have
     private void IsItTheBestScore(int currentScore)
     {
-        SaveGameManager.LoadGame();
-        if (currentScore > SaveData.score)
+        
+        if (currentScore > PlayerPrefs.GetInt("HighScore", 0))
         {
-            SaveData.score = currentScore;
-            SaveGameManager.SaveGame();
+            PlayerPrefs.SetInt("HighScore", currentScore);
         }
     }
 }

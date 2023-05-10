@@ -4962,7 +4962,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.0028201342, y: 0}
+  m_Offset: {x: 0.021580726, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -4973,7 +4973,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.1410067, y: 1}
+  m_Size: {x: 1.6583061, y: 1}
   m_EdgeRadius: 0
 --- !u!4 &571627490
 Transform:
@@ -4983,7 +4983,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 571627488}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 28.66, z: 1}
+  m_LocalPosition: {x: 0, y: 19.72, z: 1}
   m_LocalScale: {x: 21.4, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5172,7 +5172,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 590240204}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -8.16, z: 0}
+  m_LocalPosition: {x: 0, y: -9.5, z: 0}
   m_LocalScale: {x: 21.4, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6631,7 +6631,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 4284082378078838926, guid: 9f87265b5e824c14c81ed8fe7dba25f7, type: 2}
   m_audioClip: {fileID: 8300000, guid: f938c90000c2f497f837bf16a078d9d9, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.8
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -8109,9 +8109,6 @@ MonoBehaviour:
   enemyPrefab:
   - {fileID: 1512782934554904, guid: 401d8aca9e846254890399f66cd7de66, type: 3}
   - {fileID: 1988959072326566, guid: 2ce1fb9d977e03b49a1ce0113faf945e, type: 3}
-  minSpawnDelay: 0.5
-  maxSpawnDelay: 3
-  spawnXLimit: 5.3
 --- !u!4 &994409538
 Transform:
   m_ObjectHideFlags: 0
@@ -8120,7 +8117,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 994409536}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 12.5, z: 1}
+  m_LocalPosition: {x: 0, y: 13, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8142,9 +8139,6 @@ MonoBehaviour:
   powerUpPrefab:
   - {fileID: 4872995406506504953, guid: 2d5fc02a01fc8704d99c5cd61c9796da, type: 3}
   - {fileID: 6231913029520358278, guid: c681a576fcfc91d4aa3386e89afe6891, type: 3}
-  minSpawnDelay: 3
-  maxSpawnDelay: 10
-  spawnXLimit: 5.3
 --- !u!1 &1048720595
 GameObject:
   m_ObjectHideFlags: 0

@@ -5,9 +5,9 @@ using UnityEngine;
 public class EnemySpawner : MonoBehaviour
 {
     public GameObject[] enemyPrefab;
-    public float minSpawnDelay = 0.5f;
-    public float maxSpawnDelay = 3f;
-    public float spawnXLimit = 5.3f;
+    private float minSpawnDelay = 0.5f;
+    private float maxSpawnDelay = 3f;
+    private float spawnXLimit = 6.3f;
 
     // Start is called before the first frame update
     void Start()
