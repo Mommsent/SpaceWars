@@ -27,7 +27,7 @@ public class ShipControl : MonoBehaviour
     }
 
 
-    private float _speed = 10f;
+    private float _speed = 12f;
     private float _xLimit = 13f;
     private float _uppYLimit = 7f;
     private float _downYLimmit = -4.3f;
@@ -81,75 +81,72 @@ public class ShipControl : MonoBehaviour
     {
         if (other.CompareTag("ShootFasterPowerUP"))
         {
-            _isShootFasterActive = true;
-            _reloadTime /= 2f;
-
-            if(_isShootFasterActive == true) 
-                durationTime += 6f;
-
-            Destroy(other.gameObject);
-            _gunUpPrefab.SetActive(true);
-            StartCoroutine(BuffDuration());
+            if(_isShootFasterActive == false)
+            {
+                PickUpPowerUps(other);
+                StartCoroutine(BuffDuration());
+            }
         }
         else if (other.CompareTag("ShieldPowerUp"))
         {
-            _isShilded = true;
-
-            if(_isShilded == true)
-                shildedTime += 4f;
-
-            Destroy(other.gameObject);
-            _shildPrefab.SetActive(true);
-            StartCoroutine(ShildedTime());
+            if(_isShilded == false)
+            {
+                PickUpPowerUps(other);
+                StartCoroutine(ShildedTime());
+            }
         }
         else if (other.CompareTag("Enemy") && _isShilded == false && _IsDead == false)
         {
-            _IsDead = true;
-            Destroy(other.gameObject);
-            PlayAnimOfDeath();
-
-            GameOver.Invoke();
-
+            PlayPlayersDeath(other);
             StartCoroutine(DelayBeforeDestroy());
         }
         else if (other.CompareTag("EnemyBullet") && _IsDead == false && _isShilded == false)
         {
-            _IsDead = true;
-            Destroy(other.gameObject);
-            PlayAnimOfDeath();
-
-            GameOver.Invoke();
-
+            PlayPlayersDeath(other);
             StartCoroutine(DelayBeforeDestroy());
         }
+    }
+
+    private void PickUpPowerUps(Collider2D other)
+    {
+        Destroy(other.gameObject);
     }
 
 
     [SerializeField] private AudioClip _DeathClip;
 
-    private void PlayAnimOfDeath()
+    private void PlayPlayersDeath(Collider2D other)
     {
+        _IsDead = true;
+        GameOver.Invoke();
+        Destroy(other.gameObject);
         _ship_animator.SetBool("IsDead", true);
         _audioSource.PlayOneShot(_DeathClip);
     }
 
-    private float durationTime = 6f;
     IEnumerator BuffDuration()
     {
-        yield return new WaitForSeconds(durationTime);
+        _isShootFasterActive = true;
+        _reloadTime /= 2f;
+        _gunUpPrefab.SetActive(true);
+
+        yield return new WaitForSeconds(6f);
+
         _gunUpPrefab.SetActive(false);
         _isShootFasterActive = false;
         _reloadTime = 0.5f;
-        durationTime = 6f;
+        
     }
 
-    private float shildedTime = 4f;
     IEnumerator ShildedTime()
     {
-        yield return new WaitForSeconds(shildedTime);
+        _isShilded = true;
+        _shildPrefab.SetActive(true);
+
+        yield return new WaitForSeconds(4f);
+
         _shildPrefab.SetActive(false);
         _isShilded = false;
-        shildedTime = 4f;
     }
 
     IEnumerator DelayBeforeDestroy()

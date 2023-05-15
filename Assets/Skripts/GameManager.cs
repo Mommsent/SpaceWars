@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
     private TMP_Text gameOverScore;
 
     private int playerScore = 0;
-    private int pointsToDecrease = 2;
+    private int pointsToDecrease = 1;
 
     public static UnityEvent GamePaused = new UnityEvent();
     public static UnityEvent Continued = new UnityEvent();
@@ -27,16 +27,18 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        ShipControl.GameOver.AddListener(PlayerDied);
-        Enemy.EnemyIsDied.AddListener(AddScore);
-        DestroyOnTrigger.EnemyPassed.AddListener(DecreaseScore);
+        _audioSource = GetComponent<AudioSource>();
     }
 
     //Find player, that we can deactivate controls and play gameover clip
     private void Start()
     {
+        Time.timeScale = 1;
         IsGameOver = false;
-        _audioSource = GetComponent<AudioSource>();
+
+        ShipControl.GameOver.AddListener(PlayerDied);
+        Enemy.EnemyIsDied.AddListener(AddScore);
+        DestroyOnTrigger.EnemyPassed.AddListener(DecreaseScore);
     }
 
     //Check if Esc button pressed and do staff
@@ -44,18 +46,14 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape) && !IsGameOver)
         {
-            PausePressed();
+            PauseGame();
         }
-    }
-
-    private void PausePressed()
-    {
-        gameIsPaused = !gameIsPaused;
-        PauseGame();
     }
 
     private void PauseGame()
     {
+        gameIsPaused = !gameIsPaused;
+
         if (gameIsPaused)
         {
             GamePaused.Invoke();
@@ -79,8 +77,11 @@ public class GameManager : MonoBehaviour
     }
     private void DecreaseScore()
     {
-        playerScore -= pointsToDecrease;
-        scoreText.text = "Score: " + playerScore.ToString();
+        if(playerScore >= 0)
+        {
+            playerScore -= pointsToDecrease;
+            scoreText.text = "Score: " + playerScore.ToString(); // convert and print score on the screen
+        }
     }
 
 

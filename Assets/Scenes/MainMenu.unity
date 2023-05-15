@@ -4847,7 +4847,7 @@ GameObject:
   - component: {fileID: 1187698873}
   - component: {fileID: 1187698872}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4871,7 +4871,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 256.67, y: 0.00021362}
-  m_SizeDelta: {x: 4353.3, y: 2160}
+  m_SizeDelta: {x: 3000, y: 2000}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1187698872
 MonoBehaviour:
@@ -4947,7 +4947,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0.000061035, y: 0}
-  m_SizeDelta: {x: 3840, y: 2160}
+  m_SizeDelta: {x: 3000, y: 2000}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1198238907
 MonoBehaviour:
@@ -5923,7 +5923,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -0.0056763, y: 0.00056458}
-  m_SizeDelta: {x: 767.97, y: 534.97}
+  m_SizeDelta: {x: 390, y: 270}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1405232897
 MonoBehaviour:
@@ -5945,7 +5945,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 52915f992843f8247b7efd2a65b1b998, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 35313af049b4a2f42a0325330c51d74a, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
