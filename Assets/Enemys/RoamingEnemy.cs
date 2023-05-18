@@ -10,8 +10,8 @@ public class RoamingEnemy : Enemy
     private int _pointForDefeating = 2;
 
     private Rigidbody2D _rigidbody2D;
-    private float _speed = -1f;
-    private float _strafeSpeed = 6f;
+    private float _speed = -1.5f;
+    private float _strafeSpeed = 10f;
     private int _randomDirection;
     private float _border = 12f;
     private bool _isDead = false;

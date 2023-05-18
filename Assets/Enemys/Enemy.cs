@@ -14,18 +14,20 @@ public abstract class Enemy : MonoBehaviour, IDead
 
     [SerializeField]
     private GameObject _bulletPrefab;
-    private float _reloadTime = 2f;
+    
     private float elapsedTime = 0f;
     private Vector2 _spawnPos;
+    private float _reloadTime;
 
     public void Shoot(AudioSource _audioSource, AudioClip _ShotClip)
     {
         elapsedTime += Time.deltaTime;
+        _reloadTime = Random.Range(0.5f, 2f);
 
         if (elapsedTime > _reloadTime)
         {
             _spawnPos = transform.position;
-            _spawnPos += new Vector2(0, - 1.2f);
+            _spawnPos += new Vector2(0, -1.2f);
             Instantiate(_bulletPrefab, _spawnPos, Quaternion.identity);
             _audioSource.PlayOneShot(_ShotClip);
             elapsedTime = 0f; //reset bullet firing timer

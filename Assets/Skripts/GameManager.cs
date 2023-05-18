@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
 
     public static UnityEvent GamePaused = new UnityEvent();
     public static UnityEvent Continued = new UnityEvent();
+    public static UnityEvent Restarted = new UnityEvent();
 
     private bool IsGameOver;
     private bool gameIsPaused;
@@ -33,7 +34,6 @@ public class GameManager : MonoBehaviour
     //Find player, that we can deactivate controls and play gameover clip
     private void Start()
     {
-        Time.timeScale = 1;
         IsGameOver = false;
 
         ShipControl.GameOver.AddListener(PlayerDied);
@@ -48,9 +48,13 @@ public class GameManager : MonoBehaviour
         {
             PauseGame();
         }
+        if(Input.GetKeyDown(KeyCode.Space) && IsGameOver)
+        {
+            Restarted.Invoke();
+        }
     }
 
-    private void PauseGame()
+    public void PauseGame()
     {
         gameIsPaused = !gameIsPaused;
 
@@ -59,6 +63,7 @@ public class GameManager : MonoBehaviour
             GamePaused.Invoke();
 
             Time.timeScale = 0f;
+            Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
         }
         else
@@ -66,6 +71,7 @@ public class GameManager : MonoBehaviour
             Continued.Invoke();
 
             Time.timeScale = 1;
+            Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
     }
@@ -77,7 +83,7 @@ public class GameManager : MonoBehaviour
     }
     private void DecreaseScore()
     {
-        if(playerScore >= 0)
+        if(playerScore > 0)
         {
             playerScore -= pointsToDecrease;
             scoreText.text = "Score: " + playerScore.ToString(); // convert and print score on the screen
@@ -92,6 +98,7 @@ public class GameManager : MonoBehaviour
         IsGameOver = true;
         gameOverScore.text = "Your final score is: " + playerScore.ToString() + "\n Your the best score is " + PlayerPrefs.GetInt("HighScore", 0);
         scoreText.enabled = false;
+        Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = true;
         _audioSource.PlayOneShot(_GameOverClip);
     }

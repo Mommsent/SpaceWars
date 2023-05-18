@@ -34,7 +34,7 @@ public class MenuHandler : MonoBehaviour
         else gameOverMenu.SetActive(true);
     }
 
-    private void Continue()
+    public void Continue()
     {
         DeactivateMenuPannels();
         mainMenu.SetActive(false);

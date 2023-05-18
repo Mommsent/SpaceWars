@@ -2,12 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerBullet : Bullet
+public class PlayerBullet : MonoBehaviour
 {
-    private float _speed = 10f;
-
-    void Start()
+    public Vector2 direction = new Vector2(0, 1);
+    private float _speed = 17f;
+    private Vector2 velocity;
+    private void Update()
     {
-        Shot(_speed);
+        velocity = direction * _speed;
+    }
+    private void FixedUpdate()
+    {
+        Vector2 pos = transform.position;
+        pos += velocity * Time.fixedDeltaTime;
+        transform.position = pos;
     }
 }
