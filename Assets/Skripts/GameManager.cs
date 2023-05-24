@@ -35,7 +35,14 @@ public class GameManager : MonoBehaviour
     {
         SaveGameManager.LoadGame();
         IsGameOver = false;
+<<<<<<< Updated upstream
         _audioSource = GetComponent<AudioSource>();
+=======
+        Cursor.visible = false;
+        ShipControl.GameOver.AddListener(PlayerDied);
+        Enemy.EnemyIsDied.AddListener(AddScore);
+        DestroyOnTrigger.EnemyPassed.AddListener(DecreaseScore);
+>>>>>>> Stashed changes
     }
 
     //Check if Esc button pressed and do staff

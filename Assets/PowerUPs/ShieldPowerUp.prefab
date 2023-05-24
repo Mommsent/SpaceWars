@@ -29,7 +29,12 @@ Transform:
   m_GameObject: {fileID: 6231913029520358278}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 5.462988, y: -0.63988435, z: 0}
+<<<<<<< Updated upstream
   m_LocalScale: {x: 1.5288516, y: 0.9620606, z: 1}
+=======
+  m_LocalScale: {x: 1.5288516, y: 0.9620605, z: 1}
+  m_ConstrainProportionsScale: 0
+>>>>>>> Stashed changes
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -53,7 +58,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: dda0a0543d2ecd4458da8638dd949bce, type: 2}
+  - {fileID: 2100000, guid: d1151005b160a0c46a3c78da31c0e1a6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

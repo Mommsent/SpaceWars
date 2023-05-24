@@ -36,12 +36,31 @@ public class RoamingEnemy : MonoBehaviour, IDead
         _anim = GetComponent<Animator>();
         _randomDirection = Random.Range(0, 2);
         _audioSource = GetComponent<AudioSource>();
+<<<<<<< Updated upstream
+=======
+    }
+
+    private void Start()
+    {
+>>>>>>> Stashed changes
         ChooseDirection();
+        StartCoroutine(CanShoot());
+        _canShoot = true;
     }
     private void LateUpdate()
     {
+<<<<<<< Updated upstream
         MoveTheEnemy();
         CheckIfBorder();
+=======
+        if(_isDead == false)
+        {
+            MoveTheEnemy(_rigidbody2D, _direction);
+            if(_canShoot == true) Shoot(_audioSource, _ShotClip);
+
+            CheckIfBorder();
+        }
+>>>>>>> Stashed changes
     }
 
     private void MoveTheEnemy()
@@ -108,5 +127,12 @@ public class RoamingEnemy : MonoBehaviour, IDead
             if (child != null)
                 child.SetActive(false);
         }
+    }
+
+    private bool _canShoot;
+    IEnumerator CanShoot()
+    {
+        yield return new WaitForSeconds(9f);
+        _canShoot = false;
     }
 }
