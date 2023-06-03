@@ -1,17 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
-<<<<<<< Updated upstream
-=======
     private void Start()
     {
+        Cursor.visible = false;
         GameManager.Restarted.AddListener(PlayPressed);
     }
->>>>>>> Stashed changes
     public void PlayPressed()
     {
         SceneManager.LoadScene("MainGame");

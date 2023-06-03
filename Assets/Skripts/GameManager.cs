@@ -1,10 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Events;
-using SaveLoadSystem;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,69 +9,64 @@ public class GameManager : MonoBehaviour
     [SerializeField] private AudioClip _GameOverClip;
 
     [SerializeField]
-    public Text scoreText;
+    private Text scoreText;
     [SerializeField]
     private TMP_Text gameOverScore;
 
     private int playerScore = 0;
+    private int pointsToDecrease = 1;
 
     public static UnityEvent GamePaused = new UnityEvent();
     public static UnityEvent Continued = new UnityEvent();
+    public static UnityEvent Restarted = new UnityEvent();
 
     private bool IsGameOver;
     private bool gameIsPaused;
 
+
     private void Awake()
     {
-        ShipControl.GameOver.AddListener(PlayerDied);
-        EnemyMover.EnemyIsDied.AddListener(AddScore);
-        RoamingEnemy.EnemyIsDied.AddListener(AddScore);
+        _audioSource = GetComponent<AudioSource>();
     }
+
     //Find player, that we can deactivate controls and play gameover clip
     private void Start()
     {
-        SaveGameManager.LoadGame();
         IsGameOver = false;
-<<<<<<< Updated upstream
-        _audioSource = GetComponent<AudioSource>();
-=======
         Cursor.visible = false;
         ShipControl.GameOver.AddListener(PlayerDied);
         Enemy.EnemyIsDied.AddListener(AddScore);
         DestroyOnTrigger.EnemyPassed.AddListener(DecreaseScore);
->>>>>>> Stashed changes
     }
 
     //Check if Esc button pressed and do staff
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && !IsGameOver)
+        if (Input.GetKeyDown(KeyCode.Escape) && !IsGameOver || Input.GetKeyDown(KeyCode.Joystick1Button7) && !IsGameOver)
         {
-            PausePressed();
+            PauseGame();
+        }
+        if(Input.GetKeyDown(KeyCode.Space) && IsGameOver)
+        {
+            Restarted.Invoke();
         }
     }
 
-    private void PausePressed()
+    public void PauseGame()
     {
         gameIsPaused = !gameIsPaused;
-        PauseGame();
-    }
 
-    private void PauseGame()
-    {
         if (gameIsPaused)
         {
             GamePaused.Invoke();
 
             Time.timeScale = 0f;
-            Cursor.visible = true;
         }
         else
         {
             Continued.Invoke();
 
             Time.timeScale = 1;
-            Cursor.visible = false;
         }
     }
     
@@ -83,14 +75,24 @@ public class GameManager : MonoBehaviour
         playerScore+= value;
         scoreText.text = "Score: " + playerScore.ToString(); // convert and print score on the screen
     }
+    private void DecreaseScore()
+    {
+        if(playerScore > 0)
+        {
+            playerScore -= pointsToDecrease;
+            scoreText.text = "Score: " + playerScore.ToString(); // convert and print score on the screen
+        }
+    }
+
 
     //That what will heppend when player lose
     private void PlayerDied()
     {
         IsItTheBestScore(playerScore);
         IsGameOver = true;
-        gameOverScore.text = "Your final score is: " + playerScore.ToString() + "\n Your the best score is " + SaveData.score;
+        gameOverScore.text = "Your final score is: " + playerScore.ToString() + "\n Your the best score is " + PlayerPrefs.GetInt("HighScore", 0);
         scoreText.enabled = false;
+        Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = true;
         _audioSource.PlayOneShot(_GameOverClip);
     }
@@ -98,11 +100,10 @@ public class GameManager : MonoBehaviour
     //Check if current score is the highest score you ever have
     private void IsItTheBestScore(int currentScore)
     {
-        SaveGameManager.LoadGame();
-        if (currentScore > SaveData.score)
+        
+        if (currentScore > PlayerPrefs.GetInt("HighScore", 0))
         {
-            SaveData.score = currentScore;
-            SaveGameManager.SaveGame();
+            PlayerPrefs.SetInt("HighScore", currentScore);
         }
     }
 }

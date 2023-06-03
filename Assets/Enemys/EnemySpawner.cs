@@ -5,24 +5,23 @@ using UnityEngine;
 public class EnemySpawner : MonoBehaviour
 {
     public GameObject[] enemyPrefab;
-    public float minSpawnDelay = 0.5f;
-    public float maxSpawnDelay = 3f;
-    public float spawnXLimit = 5.3f;
-
+    private float minSpawnDelay = 0.5f;
+    private float maxSpawnDelay = 3f;
+    private float spawnXLimit = 6.3f;
 
     // Start is called before the first frame update
     void Start()
     {
         StartCoroutine(DelayBeforeSpawning());
     }
+
     //Spawn the enemy
     public void Spawn()
     {
         //Create the enemy in random position on X axis
-        Vector2 random = GenerateSpawnPosition();
+        Vector2 randomSpawnPos = GenerateSpawnPosition();
         int randomIndex = Random.Range(0, enemyPrefab.Length);
-        int randomDirection = Random.Range(0, 1);
-        Instantiate(enemyPrefab[randomIndex], GenerateSpawnPosition(), enemyPrefab[randomIndex].transform.rotation);
+        Instantiate(enemyPrefab[randomIndex], randomSpawnPos, enemyPrefab[randomIndex].transform.rotation);
 
         Invoke("Spawn", Random.Range(minSpawnDelay, maxSpawnDelay));
     }
@@ -39,5 +38,4 @@ public class EnemySpawner : MonoBehaviour
         yield return new WaitForSeconds(2f);
         Spawn();
     }
-
 }

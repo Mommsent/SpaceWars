@@ -5,9 +5,9 @@ using UnityEngine;
 public class PowerUPManager : MonoBehaviour
 {
     public GameObject[] powerUpPrefab;
-    public float minSpawnDelay = 5f;
-    public float maxSpawnDelay = 10f;
-    public float spawnXLimit = 5.3f;
+    private float minSpawnDelay = 5f;
+    private float maxSpawnDelay = 10f;
+    private float spawnXLimit = 8f;
 
     // Start is called before the first frame update
     void Start()

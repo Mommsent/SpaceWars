@@ -4,39 +4,88 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
 using TMPro;
-using UnityEngine.Events;
 
 public class Settings : MonoBehaviour
 {
     [SerializeField]
-    private TMP_Dropdown dropdown;
-    List<int> widths = new List<int>() { 586, 960, 1280, 1920, 3840 };
-    List<int> heights = new List<int>() { 320, 540, 800, 1080, 2160 };
+    private List<ResItem> resolutions = new List<ResItem>();
 
-    private bool isFullScreen = true;
+    private int selectedResolution;
 
     private void Start()
     {
-        SetDefaultSettings();
-    }
-    
-    private void SetDefaultSettings()
-    {
-        dropdown.value = 3;
+        foreach (var item in resolutions)
+        {
+            UpdateDropDown(item);
+        }
+        
+        bool foundRes = false;
+        for (int i = 0; i < resolutions.Count; i++)
+        {
+            if(Screen.width == resolutions[i].horizontal && Screen.height == resolutions[i].vertical)
+            {
+                foundRes = true;
+                selectedResolution = i;
+                Resolution(selectedResolution);
+                DropDownItemSelected(selectedResolution);
+            }
+        }
+
+        if (!foundRes)
+        {
+            ResItem newRes = new ResItem();
+            newRes.horizontal = Screen.width;
+            newRes.vertical = Screen.height;
+
+            resolutions.Add(newRes);
+
+            UpdateDropDown(newRes);
+
+            selectedResolution = resolutions.Count - 1;
+            Resolution(selectedResolution);
+            DropDownItemSelected(selectedResolution);
+        }
     }
 
     public void Resolution(int resolutionIndex)
     {
         bool fullscreen = Screen.fullScreen;
-        int width = widths[resolutionIndex];
-        int height = heights[resolutionIndex];
-        Screen.SetResolution(width, height, fullscreen);
+        int horizontal = resolutions[resolutionIndex].horizontal;
+        int vertical = resolutions[resolutionIndex].vertical;
+        Screen.SetResolution(horizontal, vertical, fullscreen);
     }
+
+    private bool isFullScreen = true;
+    [SerializeField]
+    private Toggle fullScreen;
 
     public void FullScreenToggle()
     {
         isFullScreen = !isFullScreen;
         Screen.fullScreen = isFullScreen;
-        Debug.Log(isFullScreen);
+        Debug.Log("Fullscreen" + isFullScreen);
     }
+
+    [SerializeField]
+    private TMP_Dropdown dropdown;
+    [SerializeField]
+    private TMP_Text textBox;
+
+    private void UpdateDropDown(ResItem newRes)
+    {
+        string newText = newRes.horizontal + " x " + newRes.vertical;
+        dropdown.options.Add(new TMP_Dropdown.OptionData() { text = newText });
+    }
+
+    private void DropDownItemSelected(int selectedIndex)
+    {
+        dropdown.value = selectedIndex;
+        int SetValue = dropdown.value;
+        textBox.text = dropdown.options[SetValue].text;
+    }
+}
+[System.Serializable]
+public class ResItem
+{
+    public int horizontal, vertical;
 }

@@ -4,6 +4,6 @@ using UnityEngine;
 
 interface IDead
 {
-    void DeactivateRenderAndCollision();
+    void DeactivateRenderAndCollision(PolygonCollider2D polygonCollider2D);
 }
     

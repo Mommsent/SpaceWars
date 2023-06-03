@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+
 
 public class MenuHandler : MonoBehaviour
 {
@@ -14,7 +13,7 @@ public class MenuHandler : MonoBehaviour
 
     private void Awake()
     {
-        GameManager.GamePaused.AddListener(Pause);
+        GameManager.GamePaused.AddListener(PauseOrGameOverMenu);
         GameManager.Continued.AddListener(Continue);
         ShipControl.GameOver.AddListener(GameIsOver);
     }
@@ -27,20 +26,23 @@ public class MenuHandler : MonoBehaviour
             menu.SetActive(false);
         }
     }
-    //Game conditions
-    private void Pause()
+    //chooses what menu open depends on game condition
+    public void PauseOrGameOverMenu()
     {
-        mainMenu.SetActive(true);
+        if(isGameOver == false) mainMenu.SetActive(true);
+        else gameOverMenu.SetActive(true);
     }
 
-    private void Continue()
+    public void Continue()
     {
         DeactivateMenuPannels();
         mainMenu.SetActive(false);
     }
 
+    private bool isGameOver = false;
     private void GameIsOver()
     {
-        gameOverMenu.SetActive(true);
+        isGameOver = true;
+        PauseOrGameOverMenu();
     }
 }

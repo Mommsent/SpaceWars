@@ -5,71 +5,29 @@ using UnityEngine.Events;
 
 public class ShipControl : MonoBehaviour
 {
-    private Animator _ship_animator;
-
-    [SerializeField] private AudioSource _audioSource;
-    [SerializeField] private AudioClip _ShotClip;
-    [SerializeField] private AudioClip _DeathClip;
-
     public static UnityEvent GameOver = new UnityEvent();
 
-    private Vector2 _spawnPos;
-
-    [SerializeField]
-    private GameObject _bulletPrefab;
-    [SerializeField]
-    private GameObject _shildPrefab;
-    [SerializeField]
-    private GameObject _gunUpPrefab;
-
-    [SerializeField]
-    public float _speed = 10f;
-    [SerializeField]
-    public float _xLimit;
-    private float _reloadTime = 0.5f;
-
-    private bool _isShilded = false;
-    private bool _IsDead = false;
-
-    private float ReloadTime
-    {
-        get { return _reloadTime = 0.25f;}
-        set { _reloadTime = value;}
-    }
-
-    private float elapsedTime = 0f;
+    private Animator _ship_animator;
+    [SerializeField] private AudioSource _audioSource;
 
     private void Start()
     {
         _ship_animator = GetComponent<Animator>();
         _audioSource = GetComponent<AudioSource>();
-<<<<<<< Updated upstream
-        Cursor.visible = false;
-=======
->>>>>>> Stashed changes
     }
 
     private void Update()
     {
         if (_IsDead == false)
         {
-            Move();
+            GetAxisOfPlayerInput();
             Shoot();
         }
     }
 
-    private void Move()
+    private void GetAxisOfPlayerInput()
     {
         float xInput = Input.GetAxis("Horizontal");
-<<<<<<< Updated upstream
-        transform.Translate(xInput * _speed * Time.deltaTime, 0f, 0f);
-
-        Vector2 position = transform.position;
-        position.x = Mathf.Clamp(position.x, -_xLimit, _xLimit);
-        transform.position = position;
-    }
-
-=======
         float yInput = Input.GetAxis("Vertical");
         Move(xInput, yInput);
         Rotate(xInput);
@@ -116,23 +74,22 @@ public class ShipControl : MonoBehaviour
     private float _reloadTime = 0.3f;
     Vector2 direction;
 
->>>>>>> Stashed changes
     private void Shoot()
     {
         elapsedTime += Time.deltaTime;
+        direction = (transform.localRotation * Vector2.up).normalized;
 
         if (Input.GetButton("Jump") && elapsedTime > _reloadTime)
         {
-            _spawnPos = transform.position;
-            _spawnPos += new Vector2(0, 1.2f);
-            Instantiate(_bulletPrefab, _spawnPos, Quaternion.identity);
+            GameObject instanshietedBullet = Instantiate(_bulletPrefab, _spawnPos.position, transform.rotation);
+            PlayerBullet bullet = instanshietedBullet.GetComponent<PlayerBullet>();
+            bullet.direction = direction;
+
             _audioSource.PlayOneShot(_ShotClip);
             elapsedTime = 0f; //reset bullet firing timer
         }
     }
 
-<<<<<<< Updated upstream
-=======
 
     [SerializeField]
     private GameObject _shieldPrefab;
@@ -146,60 +103,41 @@ public class ShipControl : MonoBehaviour
     private bool _IsDead = false;
     private bool _isShootFasterActive = false;
 
->>>>>>> Stashed changes
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("ShootFasterPowerUP"))
         {
-<<<<<<< Updated upstream
-            _reloadTime /= 2;
-            Destroy(other.gameObject);
-            _gunUpPrefab.SetActive(true);
-            StartCoroutine(Cooldown());
-=======
-            if (_isShootFasterActive == false)
-            {
-                PickUpPowerUps(other);
-                StartCoroutine(GunUpBuffDuration());
-            }
->>>>>>> Stashed changes
+            PickUpPowerUps(other);
+            StartCoroutine(GunUpBuffDuration());
         }
-        else if(other.CompareTag("ShieldPowerUp"))
+        else if (other.CompareTag("ShieldPowerUp"))
         {
-            _isShilded = true;
-            Destroy(other.gameObject);
-            _shildPrefab.SetActive(true);
+            PickUpPowerUps(other);
             StartCoroutine(ShildedTime());
         }
-        else if(other.CompareTag("Enemy") && _isShilded == false)
+        else if (other.CompareTag("Enemy") && _isShilded == false && _IsDead == false)
         {
-            _ship_animator.SetBool("IsDead", true);
-            _IsDead = true;
-
-            GameOver.Invoke();
-
-            Destroy(other.gameObject);
-            _audioSource.PlayOneShot(_DeathClip);
+            PlayPlayersDeath(other);
+            StartCoroutine(DelayBeforeDestroy());
+        }
+        else if (other.CompareTag("EnemyBullet") && _IsDead == false && _isShilded == false)
+        {
+            PlayPlayersDeath(other);
             StartCoroutine(DelayBeforeDestroy());
         }
     }
 
-    IEnumerator Cooldown()
+    private void PickUpPowerUps(Collider2D other)
     {
-<<<<<<< Updated upstream
-        yield return new WaitForSeconds(6f);
-        _gunUpPrefab.SetActive(false);
-        _reloadTime = 0.5f;
-=======
         Destroy(other.gameObject);
     }
 
 
     [SerializeField] private AudioClip _DeathClip;
 
-    private float _gunUpDuration = 10f;
-    private float _shildDuration = 7f;
-    private float _timeForPlayAnim = 3f;
+    private float _gunUpDuration;
+    private float _shildDuration;
+    private float _timeForPlayAnim;
     [SerializeField]
     private Animator _gunPoverUpAnimator;
     [SerializeField]
@@ -220,6 +158,8 @@ public class ShipControl : MonoBehaviour
     {
         _isShootFasterActive = true;
         _reloadTime /= 2f;
+        _gunUpDuration = 10f;
+        _timeForPlayAnim = 3f;
         _gunUpPrefab.SetActive(true);
         _audioSource.PlayOneShot(_catchUpGun);
 
@@ -232,19 +172,16 @@ public class ShipControl : MonoBehaviour
         EndOfPowerUpAnim(_gunPoverUpAnimator, "ToIdle", _gunUpPrefab, ref _isShootFasterActive);
         _reloadTime = 0.5f;
         Debug.Log(_isShootFasterActive == true);
->>>>>>> Stashed changes
     }
+
     IEnumerator ShildedTime()
     {
-<<<<<<< Updated upstream
-        yield return new WaitForSeconds(4f);
-        _shildPrefab.SetActive(false);
-        _isShilded = false;
-=======
         _isShilded = true;
         _shieldPrefab.SetActive(true);
         _audioSource.PlayOneShot(_catchUpShield);
-        
+        _shildDuration = 7f;
+        _timeForPlayAnim = 3f;
+
         yield return new WaitForSeconds(_shildDuration - _timeForPlayAnim);
 
         PlayCloseToEndOfPowerUpAnim(_shieldPoverUpAnimator, "ShieldCloseToEnd");
@@ -266,7 +203,6 @@ public class ShipControl : MonoBehaviour
         _PoverUpAnimator.SetBool(AnimName, true);
         prefub.SetActive(false);
         IsActive = false;
->>>>>>> Stashed changes
     }
 
     IEnumerator DelayBeforeDestroy()

@@ -8,17 +8,19 @@ TagManager:
   - ShootFasterPowerUP
   - ShieldPowerUp
   - Bullet
+  - EnemyBullet
+  - PlayerBullet
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
-  - Player
   - Enemy
+  - EnemyBullet
+  - PlayerBullet
   - PowerUp
-  - Bullet
   - 
   - 
   - 
