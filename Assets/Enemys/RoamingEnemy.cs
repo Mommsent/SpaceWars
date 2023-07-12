@@ -46,9 +46,30 @@ public class RoamingEnemy : Enemy
         if(_isDead == false)
         {
             MoveTheEnemy(_rigidbody2D, _direction);
-            if(_canShoot == true) Shoot(_audioSource, _ShotClip);
+            if(_canShoot == true) Shoot();
 
             CheckIfBorder();
+        }
+    }
+
+    [SerializeField]
+    private GameObject _bulletPrefab;
+
+    private float elapsedTime = 0f;
+    private Vector2 _spawnPos;
+    private float _reloadTime;
+    public void Shoot()
+    {
+        elapsedTime += Time.deltaTime;
+        _reloadTime = Random.Range(0.5f, 2f);
+
+        if (elapsedTime > _reloadTime)
+        {
+            _spawnPos = transform.position;
+            _spawnPos += new Vector2(0, -1.2f);
+            Instantiate(_bulletPrefab, _spawnPos, Quaternion.identity);
+            _audioSource.PlayOneShot(_ShotClip);
+            elapsedTime = 0f; //reset bullet firing timer
         }
     }
 

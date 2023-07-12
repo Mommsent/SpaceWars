@@ -5,7 +5,6 @@ public class MainMenu : MonoBehaviour
 {
     private void Start()
     {
-        Cursor.visible = false;
         GameManager.Restarted.AddListener(PlayPressed);
     }
     public void PlayPressed()

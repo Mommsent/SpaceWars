@@ -1,9 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public abstract class Enemy : MonoBehaviour, IDead
+public abstract class Enemy : MonoBehaviour, IDeadEnemy
 {
     public static UnityEvent<int> EnemyIsDied = new UnityEvent<int>();
 
@@ -12,27 +11,6 @@ public abstract class Enemy : MonoBehaviour, IDead
         _rigidBody2D.velocity = _direction;
     }
 
-    [SerializeField]
-    private GameObject _bulletPrefab;
-    
-    private float elapsedTime = 0f;
-    private Vector2 _spawnPos;
-    private float _reloadTime;
-
-    public void Shoot(AudioSource _audioSource, AudioClip _ShotClip)
-    {
-        elapsedTime += Time.deltaTime;
-        _reloadTime = Random.Range(0.5f, 2f);
-
-        if (elapsedTime > _reloadTime)
-        {
-            _spawnPos = transform.position;
-            _spawnPos += new Vector2(0, -1.2f);
-            Instantiate(_bulletPrefab, _spawnPos, Quaternion.identity);
-            _audioSource.PlayOneShot(_ShotClip);
-            elapsedTime = 0f; //reset bullet firing timer
-        }
-    }
     public void PlayAnimAndEffectsOfDeath(Animator _anim, AudioSource _audioSource, AudioClip _DeathClip)
     {
         _anim.SetBool("IsDead", true);

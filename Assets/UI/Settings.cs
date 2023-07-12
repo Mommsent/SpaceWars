@@ -1,91 +1,88 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Audio;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Events;
 
 public class Settings : MonoBehaviour
 {
-    [SerializeField]
-    private List<ResItem> resolutions = new List<ResItem>();
+    public static UnityEvent ShowConfirmMessege = new UnityEvent();
 
-    private int selectedResolution;
+    private void OnEnable()
+    {
+        _fullScreenToggle.onValueChanged.AddListener((v) =>
+        {
+            SetFullScreen(v);
+        });
+    }
 
     private void Start()
     {
-        foreach (var item in resolutions)
+        SetStandartResolutionsMenuOptions();
+    }
+
+    [Header("Resolution Dropdown")]
+    [SerializeField] private TMP_Dropdown _resolutionDropdown;
+    private Resolution[] _resolutions;
+    private List<Resolution> _filtredResolutions;
+    private float _currentRefreshRate;
+    private int _currentResolutionIndex = 0;
+    private bool _isFoundRes = false;
+
+    private void SetStandartResolutionsMenuOptions()
+    {
+        _resolutions = Screen.resolutions;
+        _filtredResolutions = new List<Resolution>();
+
+        _resolutionDropdown.ClearOptions();
+        _currentRefreshRate = Screen.currentResolution.refreshRate;
+
+        for (int i = 0; i < _resolutions.Length; i++)
         {
-            UpdateDropDown(item);
-        }
-        
-        bool foundRes = false;
-        for (int i = 0; i < resolutions.Count; i++)
-        {
-            if(Screen.width == resolutions[i].horizontal && Screen.height == resolutions[i].vertical)
+            if (_resolutions[i].refreshRate == _currentRefreshRate)
             {
-                foundRes = true;
-                selectedResolution = i;
-                Resolution(selectedResolution);
-                DropDownItemSelected(selectedResolution);
+                _filtredResolutions.Add(_resolutions[i]);
             }
         }
 
-        if (!foundRes)
+        List<string> options = new List<string>();
+
+        for (int i = 0; i < _filtredResolutions.Count; i++)
         {
-            ResItem newRes = new ResItem();
-            newRes.horizontal = Screen.width;
-            newRes.vertical = Screen.height;
-
-            resolutions.Add(newRes);
-
-            UpdateDropDown(newRes);
-
-            selectedResolution = resolutions.Count - 1;
-            Resolution(selectedResolution);
-            DropDownItemSelected(selectedResolution);
+            string option = $"{_filtredResolutions[i].width} X {_filtredResolutions[i].height} {_filtredResolutions[i].refreshRate} Ghz";
+            options.Add(option);
+            if (_filtredResolutions[i].width == Screen.width && _filtredResolutions[i].height == Screen.height)
+            {
+                _currentResolutionIndex = i;
+                SetResolution(_currentResolutionIndex);
+                _isFoundRes = true;
+            }
         }
+        if (_isFoundRes == false)
+        {
+            _currentResolutionIndex = _filtredResolutions.Count - 1;
+            SetResolution(_currentResolutionIndex);
+        }
+
+        _resolutionDropdown.AddOptions(options);
+        SetResolution(_currentResolutionIndex);
     }
 
-    public void Resolution(int resolutionIndex)
+    public void SetResolution(int resolutionIndex)
     {
-        bool fullscreen = Screen.fullScreen;
-        int horizontal = resolutions[resolutionIndex].horizontal;
-        int vertical = resolutions[resolutionIndex].vertical;
-        Screen.SetResolution(horizontal, vertical, fullscreen);
+        Resolution resolution = _filtredResolutions[resolutionIndex];
+        Screen.SetResolution(resolution.width, resolution.height, _isFullScreen);
+        _resolutionDropdown.value = resolutionIndex;
     }
 
-    private bool isFullScreen = true;
-    [SerializeField]
-    private Toggle fullScreen;
+    [Header("FullScreen Toggle")]
+    [SerializeField] private Toggle _fullScreenToggle;
+    private bool _isFullScreen = true;
 
-    public void FullScreenToggle()
+    public void SetFullScreen(bool isFullScreen)
     {
-        isFullScreen = !isFullScreen;
         Screen.fullScreen = isFullScreen;
-        Debug.Log("Fullscreen" + isFullScreen);
+        isFullScreen = !isFullScreen;
+        _isFullScreen = isFullScreen;
     }
-
-    [SerializeField]
-    private TMP_Dropdown dropdown;
-    [SerializeField]
-    private TMP_Text textBox;
-
-    private void UpdateDropDown(ResItem newRes)
-    {
-        string newText = newRes.horizontal + " x " + newRes.vertical;
-        dropdown.options.Add(new TMP_Dropdown.OptionData() { text = newText });
-    }
-
-    private void DropDownItemSelected(int selectedIndex)
-    {
-        dropdown.value = selectedIndex;
-        int SetValue = dropdown.value;
-        textBox.text = dropdown.options[SetValue].text;
-    }
-}
-[System.Serializable]
-public class ResItem
-{
-    public int horizontal, vertical;
 }

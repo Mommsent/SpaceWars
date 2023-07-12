@@ -1864,7 +1864,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -7.4999924, y: 1.5}
+  m_AnchoredPosition: {x: -7.5, y: 1.5}
   m_SizeDelta: {x: -35, y: -13}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &357568949
@@ -5053,22 +5053,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2295a0e90e00199488110d83c92565e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  resolutions:
-  - horizontal: 586
-    vertical: 320
-  - horizontal: 960
-    vertical: 540
-  - horizontal: 1280
-    vertical: 800
-  - horizontal: 1920
-    vertical: 1080
-  - horizontal: 2560
-    vertical: 1440
-  - horizontal: 3840
-    vertical: 2160
-  fullScreen: {fileID: 1983088956}
-  dropdown: {fileID: 2055008207}
-  textBox: {fileID: 351812763}
+  _resolutionDropdown: {fileID: 2055008207}
+  _fullScreenToggle: {fileID: 1983088956}
 --- !u!4 &1215090697
 Transform:
   m_ObjectHideFlags: 0
@@ -6292,7 +6278,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -0.64499664, y: 2}
+  m_AnchoredPosition: {x: -0.644989, y: 2}
   m_SizeDelta: {x: 2.6699884, y: 172.2}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1445362453
@@ -7445,8 +7431,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1215090696}
         m_TargetAssemblyTypeName: Settings, Assembly-CSharp
-        m_MethodName: FullScreenToggle
-        m_Mode: 1
+        m_MethodName: SetFullScreen
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -8122,7 +8108,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1215090696}
         m_TargetAssemblyTypeName: Settings, Assembly-CSharp
-        m_MethodName: Resolution
+        m_MethodName: SetResolution
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8154,8 +8140,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 15.3, y: 82.3}
-  m_SizeDelta: {x: 250.3, y: 50}
+  m_AnchoredPosition: {x: 39.2, y: 81.4}
+  m_SizeDelta: {x: 327.504, y: 65.422}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2055008209
 MonoBehaviour:

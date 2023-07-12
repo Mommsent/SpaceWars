@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 public class DestroyOnTrigger : MonoBehaviour
@@ -7,9 +5,15 @@ public class DestroyOnTrigger : MonoBehaviour
     public static UnityEvent EnemyPassed = new UnityEvent();
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.tag == "Enemy")
+        if (other.CompareTag("Enemy"))
+        {
             EnemyPassed.Invoke();
-
-        Destroy(other.gameObject);
+            Destroy(other.gameObject);
+        }
+        
+        if (other.CompareTag("EnemyBullet"))
+        {
+            Destroy(other.gameObject);
+        }
     }
 }

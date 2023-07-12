@@ -1,14 +1,31 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class ShipControl : MonoBehaviour
+
+public class ShipControl : MonoBehaviour, ICanShoot
 {
     public static UnityEvent GameOver = new UnityEvent();
 
+    public PlayerInput _input;
+
     private Animator _ship_animator;
     [SerializeField] private AudioSource _audioSource;
+
+    private void Awake()
+    {
+        _input = new PlayerInput();
+    }
+
+    private void OnEnable()
+    {
+        _input.Enable();
+    }
+
+    private void OnDisable()
+    {
+        _input.Disable();
+    }
 
     private void Start()
     {
@@ -27,17 +44,17 @@ public class ShipControl : MonoBehaviour
 
     private void GetAxisOfPlayerInput()
     {
-        float xInput = Input.GetAxis("Horizontal");
-        float yInput = Input.GetAxis("Vertical");
-        Move(xInput, yInput);
-        Rotate(xInput);
+        Vector2 moveDirection = _input.Player.Move.ReadValue<Vector2>();
+
+        Move(moveDirection);
+        Rotate(moveDirection);
     }
 
     private float tiltAngle = 10.0f;
     private float smooth = 3.0f;
-    private void Rotate(float xInput)
+    private void Rotate(Vector2 rotation)
     {
-        float tiltAroundZ = -xInput * tiltAngle;
+        float tiltAroundZ = -rotation.x * tiltAngle;
         Quaternion target = Quaternion.Euler(0, 0, tiltAroundZ);
         transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.deltaTime * smooth);
     }
@@ -46,10 +63,10 @@ public class ShipControl : MonoBehaviour
     private float _transformXLimit = 13f;
     private float _uppYLimit = 7f;
     private float _downYLimmit = -4.3f;
-    private void Move(float xInput, float yInput)
+    private void Move(Vector2 direction)
     {
-        transform.Translate(xInput * _speed * Time.deltaTime, 0f, 0f);
-        transform.Translate(0f, yInput * _speed * Time.deltaTime, 0f);
+        transform.Translate(direction.x * _speed * Time.deltaTime, 0f, 0f);
+        transform.Translate(0f, direction.y * _speed * Time.deltaTime, 0f);
         CheckIfBorderOfTheMap();
     }
     private void CheckIfBorderOfTheMap()
@@ -72,14 +89,15 @@ public class ShipControl : MonoBehaviour
 
     private float elapsedTime = 0f;
     private float _reloadTime = 0.3f;
-    Vector2 direction;
+    private Vector2 direction;
 
-    private void Shoot()
+    public void Shoot()
     {
         elapsedTime += Time.deltaTime;
         direction = (transform.localRotation * Vector2.up).normalized;
+        bool isShootPressed = _input.Player.Shoot.ReadValue<float>() > 0.1f;
 
-        if (Input.GetButton("Jump") && elapsedTime > _reloadTime)
+        if (isShootPressed  && elapsedTime > _reloadTime)
         {
             GameObject instanshietedBullet = Instantiate(_bulletPrefab, _spawnPos.position, transform.rotation);
             PlayerBullet bullet = instanshietedBullet.GetComponent<PlayerBullet>();
@@ -138,12 +156,10 @@ public class ShipControl : MonoBehaviour
     private float _gunUpDuration;
     private float _shildDuration;
     private float _timeForPlayAnim;
-    [SerializeField]
-    private Animator _gunPoverUpAnimator;
-    [SerializeField]
-    private Animator _shieldPoverUpAnimator;
-    [SerializeField]
-    private AudioClip _endOfPowerUp;
+
+    [SerializeField] private Animator _gunPoverUpAnimator;
+    [SerializeField] private Animator _shieldPoverUpAnimator;
+    [SerializeField] private AudioClip _endOfPowerUp;
 
     private void PlayPlayersDeath(Collider2D other)
     {
@@ -171,7 +187,6 @@ public class ShipControl : MonoBehaviour
 
         EndOfPowerUpAnim(_gunPoverUpAnimator, "ToIdle", _gunUpPrefab, ref _isShootFasterActive);
         _reloadTime = 0.5f;
-        Debug.Log(_isShootFasterActive == true);
     }
 
     IEnumerator ShildedTime()
@@ -189,7 +204,6 @@ public class ShipControl : MonoBehaviour
         yield return new WaitForSeconds(_timeForPlayAnim);
 
         EndOfPowerUpAnim(_shieldPoverUpAnimator, "ToIdle", _shieldPrefab, ref _isShilded);
-        Debug.Log(_isShilded == true);
     }
 
     private void PlayCloseToEndOfPowerUpAnim(Animator _PoverUpAnimator, string AnimName)
